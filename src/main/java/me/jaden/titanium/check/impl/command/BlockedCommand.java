@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import me.jaden.titanium.check.BaseCheck;
 import me.jaden.titanium.data.PlayerData;
 import me.jaden.titanium.settings.TitaniumConfig;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 public class BlockedCommand extends BaseCheck {
@@ -20,7 +21,7 @@ public class BlockedCommand extends BaseCheck {
     public void handle(PacketReceiveEvent event, PlayerData playerData) {
         if (event.getPacketType() == PacketType.Play.Client.TAB_COMPLETE) {
             WrapperPlayClientTabComplete wrapper = new WrapperPlayClientTabComplete(event);
-            String message = wrapper.getText().toLowerCase().replaceAll("\\s+", " ");
+            final String message = wrapper.getText().toLowerCase().replaceAll("\\s+", " ");
             for (String disallowedCommand : disallowedCommands) {
                 if (message.contains(disallowedCommand)) {
                     if (!checkPermissions(event)) {
@@ -31,11 +32,15 @@ public class BlockedCommand extends BaseCheck {
             }
         } else if (event.getPacketType() == PacketType.Play.Client.CHAT_MESSAGE) {
             WrapperPlayClientChatMessage wrapper = new WrapperPlayClientChatMessage(event);
-            String message = wrapper.getMessage().toLowerCase().replaceAll("\\s+", " ");
+            final String message = wrapper.getMessage().toLowerCase().replaceAll("\\s+", " ");
             for (String disallowedCommand : disallowedCommands) {
                 if (message.contains(disallowedCommand)) {
                     if (!checkPermissions(event)) {
                         flagPacket(event, "Disallowed command: " + message, false);
+                        final Component blockedCommandMessage = TitaniumConfig.get().getMessagesConfig().getBlockedCommandMessage();
+                        if(!TitaniumConfig.getInstance().getMessagesConfig().getBlockedCommandMessage().toString().equals("")) {
+                            event.getUser().sendMessage(blockedCommandMessage);
+                        }
                     }
                     break;
                 }

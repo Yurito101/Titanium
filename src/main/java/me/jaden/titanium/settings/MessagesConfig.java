@@ -20,11 +20,13 @@ public class MessagesConfig {
                 .put("messages.staff-notification", "&7(&eTitanium&7) &8» &f%player% &7disconnected for flagging &f%checkname%")
                 .put("messages.staff-notification-info", "&7(&e%info%&7)")
                 .put("messages.disconnect-message", "&7(&eTitanium&7) &8» &fYou have been disconnected due \n&fto sending harmful packets.")
+                .put("messages.blocked-command-message", "Unknown command. Type \"/help\" for help.")
                 .build());
 
         this.staffNotification = configuration.getString("messages.staff-notification", "&7(&eTitanium&7) &8» &f%player% &7disconnected for flagging &f%checkname%");
         this.staffNotificationInfo = configuration.getString("messages.staff-notication-info", "&7(&e%info%&7)");
         this.disconnectMessage = configuration.getString("messages.disconnect-message", "&7(&eTitanium&7) &8» &fYou have been disconnected due \n&fto sending harmful packets.");
+        this.blockedCommandMessage = configuration.getString("messages.blocked-command-message", "Unknown command. Type \"/help\" for help.");
 
         this.componentSerializer = Titanium.getPlugin().getComponentSerializer();
     }
@@ -47,5 +49,9 @@ public class MessagesConfig {
         return componentSerializer.deserialize(
                 disconnectMessage.replaceAll("%checkname%", checkName)
         );
+    }
+
+    public Component getBlockedCommandMessage() {
+        return componentSerializer.deserialize(blockedCommandMessage);
     }
 }
